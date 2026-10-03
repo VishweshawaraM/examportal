@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vishweshwara Sanskrit - Digital Gurukulam</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-ivory: #F8F5EE;
+            --color-gold: #B58A3B;
+            --color-maroon: #5B1E24;
+            --color-black: #1D1D1D;
+            --color-grey: #ECE8DF;
+            
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-sanskrit: 'Tiro Devanagari Hindi', 'Sanskrit Text', serif;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--color-ivory);
+            color: var(--color-black);
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: var(--font-serif);
+        }
+
+        .sanskrit-text {
+            font-family: var(--font-sanskrit);
+            font-size: 1.1em;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s var(--transition-smooth) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .view-section {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .view-section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Typography Utilities */
+        .text-maroon { color: var(--color-maroon); }
+        .text-gold { color: var(--color-gold); }
+        .text-black { color: var(--color-black); }
+        .text-muted { color: rgba(29, 29, 29, 0.6); }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-sans);
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--color-maroon);
+            color: var(--color-ivory);
+        }
+
+        .btn-primary:hover {
+            background-color: #3d1318;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--color-black);
+            color: var(--color-black);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--color-black);
+            color: var(--color-ivory);
+        }
+
+        .premium-card {
+            background-color: var(--color-ivory);
+            border: 1px solid var(--color-grey);
+            padding: 2rem;
+            transition: var(--transition-smooth);
+        }
+
+        .premium-card:hover {
+            border-color: var(--color-gold);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 1px solid var(--color-grey);
+            color: var(--color-black);
+            font-family: var(--font-sans);
+            transition: var(--transition-smooth);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-gold);
+        }
+
+        /* Login Layout */
+        .login-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--color-ivory);
+            border: 1px solid var(--color-gold);
+            padding: 3rem 2.5rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(236, 232, 223, 0.5);
+        }
+
+        .error-message {
+            color: var(--color-maroon);
+            font-size: 0.85rem;
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Dashboard Layouts */
+        .dashboard-header {
+            border-bottom: 1px solid var(--color-grey);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background-color: var(--color-ivory);
+            z-index: 50;
+        }
+
+        .dashboard-main {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card-highlight {
+            background-color: var(--color-maroon);
+            color: var(--color-ivory);
+            border: none;
+            grid-column: 1 / -1;
+        }
+        @media (min-width: 768px) {
+            .card-highlight {
+                grid-column: span 2;
+            }
+        }
+
+        /* Teacher Layout */
+        .teacher-layout {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .teacher-layout {
+                flex-direction: row;
+            }
+        }
+
+        .sidebar {
+            width: 100%;
+            background-color: var(--color-black);
+            color: var(--color-ivory);
+            padding: 2rem;
+        }
+        @media (min-width: 768px) {
+            .sidebar {
+                width: 280px;
+                min-height: 100vh;
+            }
+        }
+
+        .teacher-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: var(--color-ivory);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: white;
+            border: 1px solid var(--color-grey);
+        }
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-grey);
+        }
+        .data-table th {
+            background-color: var(--color-ivory);
+            font-weight: 500;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        .exam-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--color-ivory);
+            border-bottom: 1px solid var(--color-grey);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .timer {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--color-black);
+        }
+        .timer.warning {
+            color: var(--color-maroon);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .exam-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .exam-section {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px dashed var(--color-grey);
+        }
+        
+        .exam-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            color: var(--color-maroon);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-block {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--color-grey);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: white;
+        }
+
+        .radio-label:hover {
+            border-color: var(--color-gold);
+        }
+
+        .radio-label input[type="radio"] {
+            accent-color: var(--color-maroon);
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .passage-box {
+            background-color: rgba(236, 232, 223, 0.4);
+            border-left: 3px solid var(--color-gold);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 200px;
+            background: white;
+        }
+
+        /* Result View */
+        .result-card {
+            max-width: 700px;
+            margin: 4rem auto;
+            background: var(--color-ivory);
+            border: 1px solid var(--color-gold);
+            padding: 4rem;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-view" class="view-section active">
+        <div class="login-container">
+            <div class="login-card fade-in">
+                <div class="text-center" style="margin-bottom: 2.5rem;">
+                    <h1 class="text-maroon" style="font-size: 2rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.2em; vertical-align: middle;">🕉️</span> VISHWESHWARA
+                    </h1>
+                    <h2 class="text-black" style="font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;">Sanskrit</h2>
+                    <p class="text-gold font-serif" style="font-style: italic; font-size: 0.95rem;">"A Premium Digital Gurukulam"</p>
+                </div>
+
+                <form id="login-form">
+                    <div id="login-error" class="error-message">Invalid credentials. Please verify and try again.</div>
+                    <div class="input-group">
+                        <input type="text" id="username" class="form-control" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        Secure Login →
+                    </button>
+                    <div class="text-center" style="margin-top: 1.5rem;">
+                        <span class="text-muted" style="font-size: 0.8rem;">Demo: srujan/15082010 | vishweshwara/15081990</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="student-dashboard" class="view-section">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">🕉️</span>
+                <div>
+                    <h1 class="text-maroon" style="font-size: 1.1rem; line-height: 1;">VISHWESHWARA</h1>
+                    <span class="text-gold" style="font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;">Sanskrit Gurukulam</span>
+                </div>
+            </div>
+            <button onclick="app.logout()" class="btn" style="padding: 0.5rem; background: transparent; color: var(--color-black);">Logout</button>
+        </header>
+
+        <main class="dashboard-main fade-in">
+            <div style="margin-bottom: 3rem;">
+                <h2 class="font-serif" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Hari Om, Srujan 🙏</h2>
+                <p class="text-gold font-serif" style="font-style: italic; font-size: 1.2rem;">Welcome to your digital learning sanctuary.</p>
+            </div>
+
+            <div class="grid-dashboard">
+                <!-- Active Exam Card -->
+                <div class="premium-card card-highlight">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                        <h3 class="font-serif" style="font-size: 1.75rem;">Active Examination</h3>
+                        <span style="background: var(--color-gold); color: white; padding: 0.25rem 0.75rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Required</span>
+                    </div>
+                    <p style="opacity: 0.9; margin-bottom: 0.5rem; font-size: 1.1rem;">Monthly Sanskrit Assessment</p>
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 2rem;">September 2026 • 60 Minutes • 50 Marks</p>
+                    <div style="text-align: right;">
+                        <button onclick="app.startExam()" class="btn" style="background: transparent; color: var(--color-gold); border: 1px solid var(--color-gold);">
+                            Begin Assessment →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="premium-card">
+                    <h3 class="font-serif text-maroon" style="font-size: 1.25rem; margin-bottom: 1rem;">Monthly Progress</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                            <span>Vocabulary</span>
+                            <span>92%</span>
+                        </div>
+                        <div style="width: 100%; height: 4px; background: var(--color-grey);">
+                            <div style="width: 92%; height: 100%; background: var(--color-gold);"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                            <span>Grammar</span>
+                            <span>85%</span>
+                        </div>
+                        <div style="width: 100%; height: 4px; background: var(--color-grey);">
+                            <div style="width: 85%; height: 100%; background: var(--color-gold);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-card">
+                    <h3 class="font-serif text-maroon" style="font-size: 1.25rem; margin-bottom: 1rem;">Previous Marks</h3>
+                    <p class="font-serif" style="font-size: 2.5rem; line-height: 1; margin-bottom: 0.5rem;">42<span style="font-size: 1rem; color: var(--color-muted);">/50</span></p>
+                    <p class="text-gold" style="font-size: 0.9rem;">Grade: Excellent (Aug 2026)</p>
+                </div>
+
+                <div class="premium-card">
+                    <h3 class="font-serif text-maroon" style="font-size: 1.25rem; margin-bottom: 1rem;">Homework</h3>
+                    <ul style="list-style: none; font-size: 0.9rem;">
+                        <li style="padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-grey); margin-bottom: 0.75rem; display: flex; justify-content: space-between;">
+                            <span>Lesson 3 Translation</span>
+                            <span class="text-gold">Due Tomorrow</span>
+                        </li>
+                        <li style="display: flex; justify-content: space-between;">
+                            <span>Sloka Memorization</span>
+                            <span class="text-muted">Completed</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="premium-card">
+                    <h3 class="font-serif text-maroon" style="font-size: 1.25rem; margin-bottom: 1rem;">Upcoming Classes</h3>
+                    <div style="font-size: 0.9rem;">
+                        <p style="font-weight: 500; margin-bottom: 0.25rem;">Advanced Sandhi Rules</p>
+                        <p class="text-muted">Today, 4:00 PM IST</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="exam-module" class="view-section">
+        <header class="exam-header">
+            <div>
+                <h2 class="font-serif text-maroon" style="font-size: 1.25rem;">Monthly Assessment</h2>
+                <p class="text-gold" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;">Student: Srujan</p>
+            </div>
+            <div id="exam-timer" class="timer">60:00</div>
+        </header>
+
+        <main class="exam-content fade-in" id="exam-form">
+            <!-- Section A -->
+            <div class="exam-section">
+                <h3 class="font-serif section-title">Section A: Reading Test</h3>
+                <p class="text-gold font-serif" style="font-style: italic; margin-bottom: 1rem;">10 Marks</p>
+                <div class="passage-box" style="text-align: center;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;">Oral Evaluation</p>
+                    <p class="text-muted" style="font-size: 0.9rem;">Please wait for the Acharya's instruction to read aloud. You will be evaluated on:</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
+                        <span style="background: white; padding: 0.5rem 1rem; border: 1px solid var(--color-grey); font-size: 0.85rem;">Pronunciation</span>
+                        <span style="background: white; padding: 0.5rem 1rem; border: 1px solid var(--color-grey); font-size: 0.85rem;">Fluency</span>
+                        <span style="background: white; padding: 0.5rem 1rem; border: 1px solid var(--color-grey); font-size: 0.85rem;">Confidence</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section B -->
+            <div class="exam-section">
+                <h3 class="font-serif section-title">Section B: Vocabulary</h3>
+                <p class="text-gold font-serif" style="font-style: italic; margin-bottom: 2rem;">10 Marks (5 Questions)</p>
+                
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">1.</span> What is the Sanskrit word for "Tree"?</p>
+                    <div class="options-grid">
+                        <label class="radio-label"><input type="radio" name="q1" value="a"> <span class="sanskrit-text">वृक्षः (Vrikshah)</span></label>
+                        <label class="radio-label"><input type="radio" name="q1" value="b"> <span class="sanskrit-text">जलम् (Jalam)</span></label>
+                        <label class="radio-label"><input type="radio" name="q1" value="c"> <span class="sanskrit-text">पर्वतः (Parvatah)</span></label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">2.</span> Translate "ग्रन्थालयः" to English.</p>
+                    <div class="options-grid">
+                        <label class="radio-label"><input type="radio" name="q2" value="a"> Hospital</label>
+                        <label class="radio-label"><input type="radio" name="q2" value="b"> Library</label>
+                        <label class="radio-label"><input type="radio" name="q2" value="c"> School</label>
+                    </div>
+                </div>
+                <!-- Simulating remaining questions to save space -->
+                <p class="text-muted" style="font-size: 0.9rem; font-style: italic;">(Questions 3, 4, 5 omitted for preview brevity)</p>
+            </div>
+
+            <!-- Section C -->
+            <div class="exam-section">
+                <h3 class="font-serif section-title">Section C: Grammar</h3>
+                <p class="text-gold font-serif" style="font-style: italic; margin-bottom: 2rem;">10 Marks (5 Questions)</p>
+
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">1.</span> Fill in the blank: सः बालकः ____ </p>
+                    <select class="form-control" style="max-width: 300px; font-family: var(--font-sanskrit);">
+                        <option value="">Select answer...</option>
+                        <option value="a">गच्छति</option>
+                        <option value="b">गच्छन्ति</option>
+                        <option value="c">गच्छसि</option>
+                    </select>
+                </div>
+
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">2.</span> Identify the gender of "पुस्तकम्" (Pustakam).</p>
+                    <select class="form-control" style="max-width: 300px;">
+                        <option value="">Select answer...</option>
+                        <option value="a">Masculine</option>
+                        <option value="b">Feminine</option>
+                        <option value="c">Neuter</option>
+                    </select>
+                </div>
+                 <p class="text-muted" style="font-size: 0.9rem; font-style: italic; margin-top: 1rem;">(Questions 3, 4, 5 omitted for preview brevity)</p>
+            </div>
+
+            <!-- Section D -->
+            <div class="exam-section">
+                <h3 class="font-serif section-title">Section D: Comprehension</h3>
+                <p class="text-gold font-serif" style="font-style: italic; margin-bottom: 2rem;">10 Marks</p>
+                
+                <div class="passage-box sanskrit-text" style="font-size: 1.2rem; line-height: 1.8;">
+                    एषः मम ग्रन्थालयः। अत्र बहूनि पुस्तकानि सन्ति। अहम् अत्र पठामि।
+                </div>
+
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">1.</span> Where does the person read?</p>
+                    <input type="text" class="form-control" placeholder="Type your short answer here...">
+                </div>
+                <div class="question-block">
+                    <p class="question-text"><span class="text-gold font-serif">2.</span> What does the passage say are present in large numbers?</p>
+                    <input type="text" class="form-control" placeholder="Type your short answer here...">
+                </div>
+            </div>
+
+            <!-- Section E -->
+            <div class="exam-section" style="border-bottom: none;">
+                <h3 class="font-serif section-title">Section E: Summary Writing</h3>
+                <p class="text-gold font-serif" style="font-style: italic; margin-bottom: 2rem;">10 Marks</p>
+                
+                <div class="question-block">
+                    <p class="question-text">Summarize the moral of "उपायेन सर्वं शक्यम्" (Story 1). You may write in English or Sanskrit.</p>
+                    <textarea class="form-control" placeholder="Begin your summary here..."></textarea>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button onclick="app.submitExam()" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">
+                    Submit Examination
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div id="exam-result" class="view-section">
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">🕉️</span>
+                <h1 class="text-maroon font-serif" style="font-size: 1.25rem;">VISHWESHWARA</h1>
+            </div>
+        </header>
+
+        <main class="fade-in" style="flex: 1; padding: 2rem;">
+            <div class="result-card">
+                <h2 class="font-serif text-maroon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Digital Report Card</h2>
+                <p class="text-muted" style="text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.85rem; margin-bottom: 3rem;">Monthly Assessment - Sept 2026</p>
+                
+                <div style="display: flex; justify-content: space-around; border-bottom: 1px solid var(--color-grey); padding-bottom: 2rem; margin-bottom: 2rem;">
+                    <div>
+                        <p class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Student</p>
+                        <p class="font-serif" style="font-size: 1.25rem;">Srujan</p>
+                    </div>
+                    <div>
+                        <p class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Final Score</p>
+                        <p class="font-serif text-maroon" style="font-size: 2rem; line-height: 1;">42<span style="font-size: 1rem; color: var(--color-muted);">/50</span></p>
+                    </div>
+                    <div>
+                        <p class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Grade</p>
+                        <p class="font-serif text-gold" style="font-size: 1.25rem;">Excellent</p>
+                    </div>
+                </div>
+
+                <div style="text-align: left; margin-bottom: 3rem;">
+                    <h3 class="font-serif" style="font-size: 1.25rem; margin-bottom: 1rem;">Sectional Breakdown</h3>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--color-grey);">
+                        <span>Reading Test</span> <span class="font-serif">9/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--color-grey);">
+                        <span>Vocabulary</span> <span class="font-serif">10/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--color-grey);">
+                        <span>Grammar</span> <span class="font-serif">8/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--color-grey);">
+                        <span>Comprehension</span> <span class="font-serif">7/10</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                        <span>Summary Writing</span> <span class="font-serif">8/10</span>
+                    </div>
+                </div>
+
+                <button onclick="app.navigateTo('student-dashboard')" class="btn btn-outline">Return to Dashboard</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="teacher-dashboard" class="view-section">
+        <div class="teacher-layout fade-in">
+            <aside class="sidebar">
+                <div style="margin-bottom: 3rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.75rem; color: var(--color-gold);">🕉️</span>
+                    <div>
+                        <h2 class="font-serif" style="font-size: 1.25rem; margin: 0;">Admin Portal</h2>
+                        <span style="font-size: 0.65rem; letter-spacing: 0.1em; color: var(--color-gold); text-transform: uppercase;">Acharya Access</span>
+                    </div>
+                </div>
+                
+                <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <a href="#" style="color: var(--color-ivory); text-decoration: none; padding: 0.75rem 1rem; background: rgba(255,255,255,0.1); border-left: 3px solid var(--color-gold);">Dashboard</a>
+                    <a href="#" style="color: rgba(248, 245, 238, 0.6); text-decoration: none; padding: 0.75rem 1rem;">Student Directory</a>
+                    <a href="#" style="color: rgba(248, 245, 238, 0.6); text-decoration: none; padding: 0.75rem 1rem;">Assign Exams</a>
+                    <a href="#" style="color: rgba(248, 245, 238, 0.6); text-decoration: none; padding: 0.75rem 1rem;">Analytics</a>
+                </nav>
+
+                <button onclick="app.logout()" class="btn" style="margin-top: 3rem; background: transparent; color: rgba(248, 245, 238, 0.6); border: 1px solid rgba(248, 245, 238, 0.2); width: 100%;">
+                    Secure Logout
+                </button>
+            </aside>
+
+            <main class="teacher-content">
+                <header style="margin-bottom: 3rem;">
+                    <h1 class="font-serif text-maroon" style="font-size: 2.5rem; margin-bottom: 0.5rem;">Hari Om, Acharya 🙏</h1>
+                    <p class="text-muted" style="font-size: 1.1rem;">Overview of current academic activities.</p>
+                </header>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                    <div class="premium-card" style="padding: 1.5rem;">
+                        <p class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem;">Total Students</p>
+                        <p class="font-serif text-black" style="font-size: 2.5rem; line-height: 1;">1,248</p>
+                    </div>
+                    <div class="premium-card" style="padding: 1.5rem; border-color: var(--color-maroon);">
+                        <p class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem;">Pending Evaluations</p>
+                        <p class="font-serif text-maroon" style="font-size: 2.5rem; line-height: 1;">42</p>
+                    </div>
+                    <div class="premium-card" style="padding: 1.5rem; background: var(--color-maroon); color: var(--color-ivory);">
+                        <p style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.5rem; color: rgba(248, 245, 238, 0.7);">System Status</p>
+                        <p class="font-serif text-gold" style="font-size: 2.5rem; line-height: 1;">Secure</p>
+                    </div>
+                </div>
+
+                <h2 class="font-serif text-black" style="font-size: 1.5rem; margin-bottom: 1rem;">Recent Submissions</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Assessment</th>
+                                <th>Submission Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 500;">Srujan</td>
+                                <td>Monthly Assessment (Sept)</td>
+                                <td class="text-muted">10 mins ago</td>
+                                <td><span style="background: rgba(181, 138, 59, 0.2); color: var(--color-gold); padding: 0.2rem 0.6rem; font-size: 0.8rem; border-radius: 20px;">Submitted</span></td>
+                                <td><button class="btn" style="padding: 0.4rem 1rem; font-size: 0.8rem; background: var(--color-maroon); color: white;">Evaluate</button></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 500;">Aditi</td>
+                                <td>Monthly Assessment (Sept)</td>
+                                <td class="text-muted">1 hour ago</td>
+                                <td><span style="background: rgba(181, 138, 59, 0.2); color: var(--color-gold); padding: 0.2rem 0.6rem; font-size: 0.8rem; border-radius: 20px;">Submitted</span></td>
+                                <td><button class="btn" style="padding: 0.4rem 1rem; font-size: 0.8rem; background: var(--color-maroon); color: white;">Evaluate</button></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 500;">Rahul</td>
+                                <td>Gita Chanting Mid-Term</td>
+                                <td class="text-muted">Yesterday</td>
+                                <td><span style="background: rgba(29, 29, 29, 0.1); color: var(--color-muted); padding: 0.2rem 0.6rem; font-size: 0.8rem; border-radius: 20px;">Evaluated</span></td>
+                                <td><button class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.8rem;">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            timerInterval: null,
+            timeLeft: 3600, // 60 minutes in seconds
+            
+            init() {
+                // Bind form submission
+                document.getElementById('login-form').addEventListener('submit', this.handleLogin.bind(this));
+                
+                // Show login by default
+                this.navigateTo('login-view');
+            },
+
+            navigateTo(viewId) {
+                // Hide all views
+                document.querySelectorAll('.view-section').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // Show target view
+                const target = document.getElementById(viewId);
+                if(target) {
+                    target.classList.add('active');
+                    // Retrigger animation
+                    const fadeEls = target.querySelectorAll('.fade-in');
+                    fadeEls.forEach(el => {
+                        el.style.animation = 'none';
+                        el.offsetHeight; /* trigger reflow */
+                        el.style.animation = null; 
+                    });
+                }
+
+                // Cleanup timer if leaving exam module
+                if (viewId !== 'exam-module' && this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            },
+
+            handleLogin(e) {
+                e.preventDefault();
+                const user = document.getElementById('username').value.trim().toLowerCase();
+                const pass = document.getElementById('password').value;
+                const errorMsg = document.getElementById('login-error');
+
+                errorMsg.style.display = 'none';
+
+                if (user === 'srujan' && pass === '15082010') {
+                    this.navigateTo('student-dashboard');
+                } else if (user === 'vishweshwara' && pass === '15081990') {
+                    this.navigateTo('teacher-dashboard');
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            },
+
+            logout() {
+                document.getElementById('login-form').reset();
+                document.getElementById('login-error').style.display = 'none';
+                this.navigateTo('login-view');
+            },
+
+            startExam() {
+                this.navigateTo('exam-module');
+                this.timeLeft = 3600; // Reset to 60 mins
+                this.updateTimerDisplay();
+                
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.submitExam(); // Auto submit
+                    }
+                }, 1000);
+            },
+
+            updateTimerDisplay() {
+                const timerEl = document.getElementById('exam-timer');
+                const m = Math.floor(this.timeLeft / 60);
+                const s = this.timeLeft % 60;
+                timerEl.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                
+                if (this.timeLeft <= 300) { // 5 minutes warning
+                    timerEl.classList.add('warning');
+                } else {
+                    timerEl.classList.remove('warning');
+                }
+            },
+
+            submitExam() {
+                // In a real app, gather form data here
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+                
+                // Show result view
+                this.navigateTo('exam-result');
+                
+                // Reset exam form
+                const formInputs = document.querySelectorAll('#exam-form input, #exam-form textarea, #exam-form select');
+                formInputs.forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') input.checked = false;
+                    else input.value = '';
+                });
+            }
+        };
+
+        // Initialize application when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
